@@ -73,5 +73,22 @@ async def _bot(ctx):
     """Is the bot cool?"""
     await ctx.send('Yes, the bot is cool.')
 
+fatos = [
+    "O coração humano bombeia cerca de 7.500 litros de sangue por dia.",
+    "Estudos mostram que abelhas aprendem a distinguir rostos específicos (como o do pesquisador) usando visão complexa, similar a reconhecimento facial básico.",
+    "Vênus gira tão devagar que um dia (rotação) = 243 dias terrestres. Um ano (órbita) = 225 dias terrestres. Dia > ano!",
+    "Guido van Rossum criou a linguagem em 1989 assistindo Monty Python's Flying Circus, uma comédia britânica.",
+    "Polvos têm três corações e sangue azul. 2 corações bombam sangue pros brânquios (oxigenação), 1 coração bombeia pros resto do corpo. Sangue azul por cobre (hemocianina), não ferro (hemoglobina)."
+    "O menor osso humano é o estribo, que mede 3mm e se localiza no ouvido."
+]
+
+@bot.command()
+async def fato(ctx):
+    fato = random.choice(fatos)
+    await ctx.send(fato)
+
+
+bot.run('token')
+
 
 bot.run('token')
