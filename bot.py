@@ -1,18 +1,44 @@
 import discord
 from discord.ext import commands
+import requests
 import random
-
-description = '''An example bot to showcase the discord.ext.commands extension
-module.
-
-There are a number of utility commands being showcased here.'''
+import json
+import os
 
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='?', description=description, intents=intents)
+bot = commands.Bot(command_prefix='?', intents=intents)
 
+
+def acha_imagem():
+    imagem = random.choice(os.listdir('images'))
+    return imagem
+
+
+def pokemon2():
+    lista_url = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0"
+    lista = requests.get(lista_url)
+        
+    dados_lista = lista.json()
+    total_pokemons = dados_lista['count']
+    
+    id_aleatorio = random.randint(1, total_pokemons)
+    
+    pokemon_escolhido = f"https://pokeapi.co/api/v2/pokemon/{id_aleatorio}"
+    resposta_pokemon = requests.get(pokemon_escolhido)
+
+
+    if resposta_pokemon.status_code == 200:
+        pokemon = resposta_pokemon.json()
+        return {
+            'nome': pokemon['name'].title(),
+            'id': pokemon['id']
+        }
+    else:
+        print(f"Erro ao buscar Pokémon ID {id_aleatorio}")
+        return (f"Erro ao buscar Pokémon ID")
 
 @bot.event
 async def on_ready():
@@ -77,8 +103,8 @@ fatos = [
     "O coração humano bombeia cerca de 7.500 litros de sangue por dia.",
     "Estudos mostram que abelhas aprendem a distinguir rostos específicos (como o do pesquisador) usando visão complexa, similar a reconhecimento facial básico.",
     "Vênus gira tão devagar que um dia (rotação) = 243 dias terrestres. Um ano (órbita) = 225 dias terrestres. Dia > ano!",
-    "Guido van Rossum criou a linguagem em 1989 assistindo Monty Python's Flying Circus, uma comédia britânica.",
-    "Polvos têm três corações e sangue azul. 2 corações bombam sangue pros brânquios (oxigenação), 1 coração bombeia pros resto do corpo. Sangue azul por cobre (hemocianina), não ferro (hemoglobina)."
+    "Guido van Rossum criou a linguagem python em 1989 assistindo Monty Python's Flying Circus, uma comédia britânica.",
+    "Polvos têm três corações e sangue azul. 2 corações bombam sangue pros brânquios (oxigenação), 1 coração bombeia pros resto do corpo. Sangue azul por cobre (hemocianina), não ferro (hemoglobina).",
     "O menor osso humano é o estribo, que mede 3mm e se localiza no ouvido."
 ]
 
@@ -87,8 +113,20 @@ async def fato(ctx):
     fato = random.choice(fatos)
     await ctx.send(fato)
 
+@bot.command()
+async def meme(ctx):
+    with open(f'images/{acha_imagem()}', 'rb') as f:
+        #Vamos armazenar o arquivo convertido da biblioteca do Discord nesta variável!
+        picture = discord.File(f)
+    # Podemos então enviar esse arquivo como um parâmetro
+    await ctx.send(file=picture)
 
-bot.run('token')
+@bot.command()
+async def pokemon(ctx):
+      await ctx.send(pokemon2())
 
+
+
+bot.run('Token')
 
 bot.run('token')
